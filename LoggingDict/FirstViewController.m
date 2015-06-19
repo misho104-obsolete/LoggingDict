@@ -46,8 +46,12 @@
 }
 
 - (NSMutableDictionary*)increment:(NSMutableDictionary*)dict {
-    [dict setObject:@([[dict objectForKey:@"count"] intValue] + 1) forKey:@"count"];
-    [dict setObject:[NSDate date] forKey:@"lastLookUp"];
+    NSDate *lastLookUp = [dict objectForKey:@"lastLookUp"], *now = [NSDate date];
+    float timePassed = [now timeIntervalSinceDate: lastLookUp];
+    if(timePassed > 60){
+        [dict setObject:@([[dict objectForKey:@"count"] intValue] + 1) forKey:@"count"];
+        [dict setObject:now forKey:@"lastLookUp"];
+    }
     return dict;
 }
 
