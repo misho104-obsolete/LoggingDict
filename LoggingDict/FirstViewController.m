@@ -9,14 +9,20 @@
 #import "FirstViewController.h"
 
 
-@interface MyReferenceLibraryViewController : UIReferenceLibraryViewController
+@protocol searchViewDelegate <NSObject>
+-(void) doSearchDone;
+@end
+
+@interface MyReferenceLibraryViewController : UIReferenceLibraryViewController { id delegate; }
+@property (nonatomic,retain) id delegate;
 @end
 
 @implementation MyReferenceLibraryViewController
+@synthesize delegate;
 -(void) dismissViewControllerAnimated:(BOOL)flag completion:(void (^)(void))completion
 {
     [super dismissViewControllerAnimated:flag completion:completion];
-    [self.view removeFromSuperview];
+    [delegate doSearchDone];
 }
 @end
 
@@ -90,8 +96,9 @@
 }
 
 - (void)doSearch:(NSString*)term {
-    UIReferenceLibraryViewController *ref = [[UIReferenceLibraryViewController alloc] initWithTerm:term];
-    [self presentViewController: ref animated:YES completion: nil];
+    MyReferenceLibraryViewController *ref = [[MyReferenceLibraryViewController alloc] initWithTerm:term ];
+    ref.delegate = self;
+    [self presentViewController: ref animated:NO completion:nil];
 
     __block NSInteger result = -1;
     [_wordList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
@@ -108,19 +115,21 @@
     }
     NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastLookUp" ascending:NO];
     _wordList = [[_wordList sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
-    [self.tableView reloadData];
     [_wordList writeToFile:_filePath atomically:NO];
 }
 
+- (void)doSearchDone {
+    [_tableView reloadData];
+    [_searchBar becomeFirstResponder];
+}
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSString *term = searchBar.text;
-    [self doSearch:term];
-    [searchBar becomeFirstResponder];
+    [self doSearch:searchBar.text];
     searchBar.text = nil;
 }
 
 -(void)searchBarCancelButtonClicked:(UISearchBar*)searchBar {
-    [searchBar resignFirstResponder];
+    [_searchBar resignFirstResponder];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
