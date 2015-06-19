@@ -109,8 +109,12 @@
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     NSString *term = searchBar.text;
     [self doSearch:term];
-    [searchBar resignFirstResponder];
+    [searchBar becomeFirstResponder];
     searchBar.text = nil;
+}
+
+-(void)searchBarCancelButtonClicked:(UISearchBar*)searchBar {
+    [searchBar resignFirstResponder];
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
