@@ -90,8 +90,8 @@
 }
 
 - (void)doSearch:(NSString*)term {
-    MyReferenceLibraryViewController *controller = [[MyReferenceLibraryViewController alloc] initWithTerm:term];
-    [self.view addSubview:controller.view];
+    UIReferenceLibraryViewController *ref = [[UIReferenceLibraryViewController alloc] initWithTerm:term];
+    [self presentViewController: ref animated:YES completion: nil];
 
     __block NSInteger result = -1;
     [_wordList enumerateObjectsWithOptions:NSEnumerationConcurrent usingBlock:^(NSDictionary *obj, NSUInteger idx, BOOL *stop) {
