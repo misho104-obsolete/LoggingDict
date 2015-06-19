@@ -45,6 +45,12 @@
     return dict;
 }
 
+- (NSMutableDictionary*)decrement:(NSMutableDictionary*)dict {
+    int c = [[dict objectForKey:@"count"] intValue];
+    if(c > 1){ [dict setObject:@(c - 1) forKey:@"count"]; }
+    return dict;
+}
+
 - (void)setToCell:(UITableViewCell*)cell dict:(NSDictionary*)dict {
    cell.textLabel.text = [dict objectForKey:@"word"];
    cell.detailTextLabel.text = [[dict objectForKey:@"count"] stringValue];
@@ -175,7 +181,14 @@
                                                   [_wordList removeObjectAtIndex:indexPath.row];
                                                   [_wordList writeToFile:_filePath atomically:NO];
                                                   [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
-                                              }]];
+                                              }],
+             [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
+                                                title:@"-1"
+                                              handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
+                                                  [self decrement:_wordList[indexPath.row]];
+                                                  [_wordList writeToFile:_filePath atomically:NO];
+                                                  [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
+             }]];
 }
 
 
