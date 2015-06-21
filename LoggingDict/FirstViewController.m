@@ -30,8 +30,12 @@
 @interface FirstViewController ()<UITableViewDelegate, UITableViewDataSource>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
+@property (nonatomic, weak) IBOutlet UIButton *button;
 @property (nonatomic, strong) NSMutableArray *wordList;
 @property (nonatomic, strong) NSString *filePath;
+@property (nonatomic, strong) NSArray  *sortModes;
+@property (nonatomic, strong) NSString *sortMode;
+@property (nonatomic, strong) NSDictionary *sortComparators;
 @end
 
 @implementation FirstViewController
@@ -83,6 +87,14 @@
         _wordList = [[NSMutableArray alloc] init];
     }
 
+    _sortModes = @[@"Recent", @"A-Z", @"Count", @"Older", @"Recent"];
+    _sortMode = _sortModes[0];
+    _sortComparators = [NSDictionary dictionaryWithObjectsAndKeys:
+                        [[NSSortDescriptor alloc] initWithKey:@"lastLookUp"  ascending:NO ], @"Recent",
+                        [[NSSortDescriptor alloc] initWithKey:@"word"        ascending:YES], @"A-Z",
+                        [[NSSortDescriptor alloc] initWithKey:@"count"       ascending:NO ], @"Count",
+                        [[NSSortDescriptor alloc] initWithKey:@"firstLookUp" ascending:YES], @"Older", nil];
+
     // tableView
     _tableView.delegate = self;
     _tableView.dataSource = self;
@@ -92,6 +104,10 @@
 
     [_searchBar becomeFirstResponder];
     _searchBar.autocapitalizationType = UITextAutocapitalizationTypeNone;
+
+    // button
+    [_button setTitle:_sortMode forState:UIControlStateNormal];
+    [_button addTarget:self action:@selector(button_Tapped:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -117,8 +133,9 @@
     } else {
         [self increment:_wordList[result]];
     }
-    NSSortDescriptor *sortDescriptor = [[NSSortDescriptor alloc] initWithKey:@"lastLookUp" ascending:NO];
-    _wordList = [[_wordList sortedArrayUsingDescriptors:@[sortDescriptor]] mutableCopy];
+    _sortMode = @"Recent";
+    [_button setTitle:_sortMode forState:UIControlStateNormal];
+    _wordList = [[_wordList sortedArrayUsingDescriptors:@[_sortComparators[_sortMode]]] mutableCopy];
     [_wordList writeToFile:_filePath atomically:NO];
 }
 
@@ -128,7 +145,7 @@
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    NSString* term = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    NSString* term = [[searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]] lowercaseString];
     searchBar.text = nil;
     [self doSearch:term];
 }
@@ -205,6 +222,16 @@
              }]];
 }
 
-
+- (void) button_Tapped: (UIButton*)sender {
+    [_searchBar resignFirstResponder];
+    BOOL flag = false;
+    for (NSString *m in _sortModes) {
+        if(flag){ _sortMode = m; break; }
+        if(m==sender.titleLabel.text){ flag = true; }
+    }
+    [_button setTitle:_sortMode forState:UIControlStateNormal];
+    _wordList = [[_wordList sortedArrayUsingDescriptors:@[_sortComparators[_sortMode]]] mutableCopy];
+    [_tableView reloadData];
+}
 
 @end
