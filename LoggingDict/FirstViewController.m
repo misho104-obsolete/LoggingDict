@@ -128,8 +128,9 @@
 }
 
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
-    [self doSearch:searchBar.text];
+    NSString* term = [searchBar.text stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
     searchBar.text = nil;
+    [self doSearch:term];
 }
 
 -(void)searchBarCancelButtonClicked:(UISearchBar*)searchBar {
