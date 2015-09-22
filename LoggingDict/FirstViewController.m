@@ -7,6 +7,7 @@
 //
 
 #import "FirstViewController.h"
+#import "AppDelegate.h"
 
 
 @protocol searchViewDelegate <NSObject>
@@ -32,10 +33,10 @@
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, weak) IBOutlet UIButton *button;
 @property (nonatomic, strong) NSMutableArray *wordList;
-@property (nonatomic, strong) NSString *filePath;
 @property (nonatomic, strong) NSArray  *sortModes;
 @property (nonatomic, strong) NSString *sortMode;
 @property (nonatomic, strong) NSDictionary *sortComparators;
+@property (nonatomic, strong) AppDelegate *delegate;
 @end
 
 @implementation FirstViewController
@@ -73,16 +74,16 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    // Do any additional setup after loading the view, typically from a nib.
+    AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
 
     // Read file
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *directory = [paths objectAtIndex:0];
-    _filePath = [directory stringByAppendingPathComponent:@"words.plist"];
+    delegate.filePath = [directory stringByAppendingPathComponent:@"words.plist"];
 
     NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:_filePath]) {
-        _wordList = [[NSArray arrayWithContentsOfFile:_filePath] mutableCopy];
+    if ([fileManager fileExistsAtPath:delegate.filePath]) {
+        _wordList = [[NSArray arrayWithContentsOfFile:delegate.filePath] mutableCopy];
     }else{
         _wordList = [[NSMutableArray alloc] init];
     }
@@ -136,7 +137,11 @@
     _sortMode = @"Recent";
     [_button setTitle:_sortMode forState:UIControlStateNormal];
     _wordList = [[_wordList sortedArrayUsingDescriptors:@[_sortComparators[_sortMode]]] mutableCopy];
-    [_wordList writeToFile:_filePath atomically:NO];
+    [self saveFile];
+}
+
+- (void)saveFile {
+    [_wordList writeToFile:_delegate.filePath atomically:NO];
 }
 
 - (void)doSearchDone {
@@ -210,14 +215,14 @@
                                                 title:@"Delete"
                                               handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
                                                   [_wordList removeObjectAtIndex:indexPath.row];
-                                                  [_wordList writeToFile:_filePath atomically:NO];
+                                                  [self saveFile];
                                                   [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
                                               }],
              [UITableViewRowAction rowActionWithStyle:UITableViewRowActionStyleNormal
                                                 title:@"-1"
                                               handler:^(UITableViewRowAction *action, NSIndexPath *indexPath) {
                                                   [self decrement:_wordList[indexPath.row]];
-                                                  [_wordList writeToFile:_filePath atomically:NO];
+                                                  [self saveFile];
                                                   [_tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
              }]];
 }
