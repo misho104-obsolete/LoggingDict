@@ -74,19 +74,8 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
-    AppDelegate *delegate = [[UIApplication sharedApplication] delegate];
-
-    // Read file
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *directory = [paths objectAtIndex:0];
-    delegate.filePath = [directory stringByAppendingPathComponent:@"words.plist"];
-
-    NSFileManager *fileManager = [NSFileManager defaultManager];
-    if ([fileManager fileExistsAtPath:delegate.filePath]) {
-        _wordList = [[NSArray arrayWithContentsOfFile:delegate.filePath] mutableCopy];
-    }else{
-        _wordList = [[NSMutableArray alloc] init];
-    }
+    _delegate = [[UIApplication sharedApplication] delegate];
+    [self loadFile];
 
     _sortModes = @[@"Recent", @"A-Z", @"Count", @"Older", @"Recent"];
     _sortMode = _sortModes[0];
@@ -138,6 +127,15 @@
     [_button setTitle:_sortMode forState:UIControlStateNormal];
     _wordList = [[_wordList sortedArrayUsingDescriptors:@[_sortComparators[_sortMode]]] mutableCopy];
     [self saveFile];
+}
+
+- (void)loadFile {
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+    if ([fileManager fileExistsAtPath:_delegate.filePath]) {
+        _wordList = [[NSArray arrayWithContentsOfFile:_delegate.filePath] mutableCopy];
+    }else{
+        _wordList = [[NSMutableArray alloc] init];
+    }
 }
 
 - (void)saveFile {
