@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		261394581BB17E4800A09885 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261394571BB17E4800A09885 /* Security.framework */; };
+		2613945A1BB17E4D00A09885 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261394591BB17E4D00A09885 /* QuartzCore.framework */; };
 		2657D8BC1B376BD800A7868F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2657D8BB1B376BD800A7868F /* AppDelegate.m */; };
 		2667B3CC1B334E20000A5CB6 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2667B3CB1B334E20000A5CB6 /* main.m */; };
 		2667B3D21B334E20000A5CB6 /* FirstViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2667B3D11B334E20000A5CB6 /* FirstViewController.m */; };
@@ -14,9 +16,12 @@
 		2667B3D81B334E20000A5CB6 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2667B3D61B334E20000A5CB6 /* Main.storyboard */; };
 		2667B3DA1B334E20000A5CB6 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2667B3D91B334E20000A5CB6 /* Assets.xcassets */; };
 		2667B3DD1B334E20000A5CB6 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2667B3DB1B334E20000A5CB6 /* LaunchScreen.storyboard */; };
+		26F4974D1BB181C800E2F316 /* DropboxSDK.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 26F4974C1BB181C800E2F316 /* DropboxSDK.framework */; settings = {ASSET_TAGS = (); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		261394571BB17E4800A09885 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		261394591BB17E4D00A09885 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		2657D8BB1B376BD800A7868F /* AppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
 		2667B3C71B334E20000A5CB6 /* LoggingDict.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LoggingDict.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2667B3CB1B334E20000A5CB6 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -29,6 +34,7 @@
 		2667B3D91B334E20000A5CB6 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2667B3DC1B334E20000A5CB6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2667B3DE1B334E20000A5CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		26F4974C1BB181C800E2F316 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +42,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				26F4974D1BB181C800E2F316 /* DropboxSDK.framework in Frameworks */,
+				2613945A1BB17E4D00A09885 /* QuartzCore.framework in Frameworks */,
+				261394581BB17E4800A09885 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +54,9 @@
 		2667B3BE1B334E20000A5CB6 = {
 			isa = PBXGroup;
 			children = (
+				26F4974C1BB181C800E2F316 /* DropboxSDK.framework */,
+				261394591BB17E4D00A09885 /* QuartzCore.framework */,
+				261394571BB17E4800A09885 /* Security.framework */,
 				2667B3C91B334E20000A5CB6 /* LoggingDict */,
 				2667B3C81B334E20000A5CB6 /* Products */,
 			);
@@ -272,6 +284,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = LoggingDict/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -287,6 +303,10 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
 				INFOPLIST_FILE = LoggingDict/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
