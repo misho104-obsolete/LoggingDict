@@ -1,0 +1,15 @@
+//
+//  DropboxSDKkey.h
+//  LoggingDict
+//
+//  Created by Sho IWAMOTO on 9/22/15.
+//  Copyright © 2015 Sho IWAMOTO. All rights reserved.
+//
+
+#ifndef DropboxKey_h
+#define DropboxKey_h
+
+#define DROPBOX_APP_KEY    @"abcdefghijklmno"
+#define DROPBOX_APP_SECRET @"abcde12345ABCDE"
+
+#endif /* DropboxKey_h */

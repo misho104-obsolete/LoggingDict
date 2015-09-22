@@ -35,6 +35,7 @@
 		2667B3DC1B334E20000A5CB6 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		2667B3DE1B334E20000A5CB6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		26F4974C1BB181C800E2F316 /* DropboxSDK.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = DropboxSDK.framework; sourceTree = "<group>"; };
+		26F497511BB185E500E2F316 /* DropboxKey.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = DropboxKey.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -73,6 +74,7 @@
 		2667B3C91B334E20000A5CB6 /* LoggingDict */ = {
 			isa = PBXGroup;
 			children = (
+				26F497511BB185E500E2F316 /* DropboxKey.h */,
 				2657D8BB1B376BD800A7868F /* AppDelegate.m */,
 				2667B3CD1B334E20000A5CB6 /* AppDelegate.h */,
 				2667B3D01B334E20000A5CB6 /* FirstViewController.h */,

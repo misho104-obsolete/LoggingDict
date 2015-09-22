@@ -7,17 +7,42 @@
 //
 
 #import "AppDelegate.h"
+#import <DropboxSDK/DropboxSDK.h>
+#include "DropboxKey.h"
 
 @interface AppDelegate ()
 @end
 
 @implementation AppDelegate
 
+- (BOOL)application:(UIApplication *)app openURL:(NSURL *)url
+  sourceApplication:(NSString *)source annotation:(id)annotation {
+    if ([[DBSession sharedSession] handleOpenURL:url]) {
+        if ([[DBSession sharedSession] isLinked]) {
+            NSLog(@"App linked successfully!");
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"refreshSecondView" object:nil];
+        }
+        return YES;
+    }
+    // Add whatever other url handling code your app requires here
+    return NO;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *directory = [paths objectAtIndex:0];
     _filePath = [directory stringByAppendingPathComponent:@"words.plist"];
+
+    DBSession *dbSession = [[DBSession alloc]
+                            initWithAppKey:DROPBOX_APP_KEY
+                            appSecret:DROPBOX_APP_SECRET
+                            root:kDBRootAppFolder];
+    if(dbSession.userIds.count > 1){
+        NSLog(@"Multiple links found; clear all.");
+        [dbSession unlinkAll];
+    }
+    [DBSession setSharedSession:dbSession];
+
     return YES;
 }
 
