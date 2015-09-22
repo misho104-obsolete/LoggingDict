@@ -8,6 +8,7 @@
 
 #import "FirstViewController.h"
 #import "AppDelegate.h"
+#import <DropboxSDK/DropboxSDK.h>
 
 
 @protocol searchViewDelegate <NSObject>
@@ -28,7 +29,7 @@
 @end
 
 
-@interface FirstViewController ()<UITableViewDelegate, UITableViewDataSource>
+@interface FirstViewController ()<UITableViewDelegate, UITableViewDataSource, DBRestClientDelegate>
 @property (nonatomic, weak) IBOutlet UITableView *tableView;
 @property (nonatomic, weak) IBOutlet UISearchBar *searchBar;
 @property (nonatomic, weak) IBOutlet UIButton *button;
@@ -36,7 +37,9 @@
 @property (nonatomic, strong) NSArray  *sortModes;
 @property (nonatomic, strong) NSString *sortMode;
 @property (nonatomic, strong) NSDictionary *sortComparators;
+@property (nonatomic, strong) NSDate *dropboxLastUpload;
 @property (nonatomic, strong) AppDelegate *delegate;
+@property (nonatomic, strong) DBRestClient *restClient;
 @end
 
 @implementation FirstViewController
@@ -75,7 +78,10 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     _delegate = [[UIApplication sharedApplication] delegate];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setRestClient) name:@"setRestClient" object:nil];
+
     [self loadFile];
+    [self setRestClient];
 
     _sortModes = @[@"Recent", @"A-Z", @"Count", @"Older", @"Recent"];
     _sortMode = _sortModes[0];
@@ -140,6 +146,11 @@
 
 - (void)saveFile {
     [_wordList writeToFile:_delegate.filePath atomically:NO];
+
+    float timePassed = _dropboxLastUpload ? [_dropboxLastUpload timeIntervalSinceNow] : 9999;
+    if(timePassed > 300 && _restClient){
+        [_restClient loadMetadata:_delegate.dropboxFilePath];
+    }
 }
 
 - (void)doSearchDone {
@@ -235,6 +246,37 @@
     [_button setTitle:_sortMode forState:UIControlStateNormal];
     _wordList = [[_wordList sortedArrayUsingDescriptors:@[_sortComparators[_sortMode]]] mutableCopy];
     [_tableView reloadData];
+}
+
+
+- (void) setRestClient {
+    DBSession *session = [DBSession sharedSession];
+    if(session.isLinked){
+        self.restClient = [[DBRestClient alloc] initWithSession:session];
+        self.restClient.delegate = self;
+    }else{
+        self.restClient = nil;
+    }
+}
+
+- (void)restClient:(DBRestClient *)client loadedMetadata:(DBMetadata *)metadata {
+    NSLog(@"Metadata obtained: %@ %@ %@ %@",metadata.filename, metadata.path, metadata.rev, metadata.root);
+    if([metadata.path compare:_delegate.dropboxFilePath] == NSOrderedSame){
+        [self.restClient uploadFile:[_delegate.dropboxFilePath lastPathComponent] toPath:[_delegate.dropboxFilePath stringByDeletingLastPathComponent] withParentRev:metadata.rev fromPath:_delegate.filePath];
+    }
+}
+
+- (void)restClient:(DBRestClient *)client loadMetadataFailedWithError:(NSError *)error {
+    NSLog(@"Error loading metadata: %@", error);
+}
+
+- (void)restClient:(DBRestClient *)client uploadedFile:(NSString *)destPath
+              from:(NSString *)srcPath metadata:(DBMetadata *)metadata {
+    NSLog(@"File uploaded successfully to path: %@", metadata.path);
+}
+
+- (void)restClient:(DBRestClient *)client uploadFileFailedWithError:(NSError *)error {
+    NSLog(@"File upload failed with error: %@", error);
 }
 
 @end

@@ -32,6 +32,7 @@
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *directory = [paths objectAtIndex:0];
     _filePath = [directory stringByAppendingPathComponent:@"words.plist"];
+    _dropboxFilePath = [@"/" stringByAppendingPathComponent:@"words.plist"];
 
     DBSession *dbSession = [[DBSession alloc]
                             initWithAppKey:DROPBOX_APP_KEY

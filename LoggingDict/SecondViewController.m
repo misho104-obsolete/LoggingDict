@@ -55,6 +55,7 @@
     }else{
         [_dropboxLink setTitle:@"Not linked" forState:UIControlStateNormal];
     }
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"setRestClient" object:nil];
 }
 
 @end
