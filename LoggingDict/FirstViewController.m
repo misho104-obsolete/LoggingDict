@@ -79,7 +79,13 @@
     [super viewDidLoad];
     _delegate = [[UIApplication sharedApplication] delegate];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(setRestClient) name:@"setRestClient" object:nil];
-
+    [[NSNotificationCenter defaultCenter] addObserverForName: @"reloadFile"
+                                                      object: nil
+                                                       queue: nil
+                                                  usingBlock: ^( NSNotification * notification ){
+                                                      [self loadFile];
+                                                      [_tableView reloadData];
+                                                  }];
     [self loadFile];
     [self setRestClient];
 
@@ -273,6 +279,11 @@
 - (void)restClient:(DBRestClient *)client uploadedFile:(NSString *)destPath
               from:(NSString *)srcPath metadata:(DBMetadata *)metadata {
     NSLog(@"File uploaded successfully to path: %@", metadata.path);
+
+    _dropboxLastUpload = [NSDate date];
+    [[NSNotificationCenter defaultCenter] postNotificationName: @"updateLastUpload"
+                                                        object: @{ @"date" : _dropboxLastUpload }];
+
 }
 
 - (void)restClient:(DBRestClient *)client uploadFileFailedWithError:(NSError *)error {
